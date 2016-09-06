@@ -155,7 +155,11 @@
 
 
     PHAuthorizationStatus authorSatus = [PHPhotoLibrary authorizationStatus];
-    if (authorSatus == PHAuthorizationStatusDenied||authorSatus==PHAuthorizationStatusRestricted) {
+    //  PHAuthorizationStatusDenied 用户拒绝当前应用访问相册
+    //  PHAuthorizationStatusRestricted 家长控制,不允许访问
+    //  PHAuthorizationStatusNotDetermined 用户还没有做出选择
+    
+    if (authorSatus == PHAuthorizationStatusDenied||authorSatus==PHAuthorizationStatusRestricted||authorSatus ==PHAuthorizationStatusNotDetermined) {
         //程序的名字
         NSDictionary*info =[[NSBundle mainBundle] infoDictionary];
         NSString*projectName =[info objectForKey:@"CFBundleName"];
@@ -170,8 +174,7 @@
         
         _groupArray = [NSMutableArray array];
         
-        
-        
+
         PHFetchOptions *option = [[PHFetchOptions alloc] init];
 //          if (!NO)
          option.predicate = [NSPredicate predicateWithFormat:@"mediaType == %ld", PHAssetMediaTypeImage];
@@ -186,17 +189,16 @@
             if (fetchResult.count < 1) continue;
             if ([collection.localizedTitle containsString:@"Deleted"] || [collection.localizedTitle isEqualToString:@"最近删除"]) continue;
             if ([self isCameraRollAlbum:collection.localizedTitle]) {
-//                [self modelWithResult:fetchResult name:collection.localizedTitle] atIndex:0]
+
                 [_groupArray insertObject:[ZLJGroupInfo resultInfoWithPHResult:fetchResult title:collection.localizedTitle] atIndex:0];
             } else {
-//                [self modelWithResult:fetchResult name:collection.localizedTitle]
+
                 [_groupArray addObject:[ZLJGroupInfo resultInfoWithPHResult:fetchResult title:collection.localizedTitle]];
             }
         }
         for (PHAssetCollection *collection in topLevelUserCollections) {
             PHFetchResult *fetchResult = [PHAsset fetchAssetsInAssetCollection:collection options:option];
             if (fetchResult.count < 1) continue;
-//            [self modelWithResult:fetchResult name:collection.localizedTitle]
             [_groupArray addObject:[ZLJGroupInfo resultInfoWithPHResult:fetchResult title:collection.localizedTitle]];
         }
 
@@ -206,31 +208,6 @@
         [self.navigationController pushViewController:firstPhotosVC animated:NO];
         
         [_tableView reloadData];
-
-        
-//        [_assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-//            
-//            if (group) {
-//                [group setAssetsFilter:[ALAssetsFilter allPhotos]];
-//                if (group.numberOfAssets>0) {
-//                    ZLJGroupInfo *groupInfo = [ZLJGroupInfo groupInfoWithALGroup:group];
-//                    [_groupArray addObject:groupInfo];
-//                }
-//            }
-//            else
-//            {
-//                _groupArray = (NSMutableArray *)[[_groupArray reverseObjectEnumerator] allObjects];
-//                ZLJPhotosVC *firstPhotosVC  = [[ZLJPhotosVC alloc] initWithGroupInfo:_groupArray[0]];
-//                firstPhotosVC.delegate =self.navigationController;
-//                [self.navigationController pushViewController:firstPhotosVC animated:NO];
-//                
-//                [_tableView reloadData];
-//            }
-//            
-//        } failureBlock:^(NSError *error) {
-//            NSLog(@"获取照片组失败");
-//        }];
-//
     }
     
     
