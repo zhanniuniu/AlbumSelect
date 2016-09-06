@@ -16,7 +16,7 @@
         PHCachingImageManager *imageManager = [[PHCachingImageManager alloc] init];
 
         [imageManager requestImageForAsset:asset
-                                targetSize:CGSizeMake(120, 120)
+                                targetSize:CGSizeMake(180, 180)
                                contentMode:PHImageContentModeAspectFill
                                    options:nil
                              resultHandler:^(UIImage *result, NSDictionary *info) {
