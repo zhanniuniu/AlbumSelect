@@ -226,11 +226,18 @@ static NSString *cellIdentifier = @"cellIdentifier";
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 //    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    
+    
+    
     if (!_queue) {
         _queue = dispatch_queue_create("serial queue", NULL);
     }
     if (!_selectedImageArray) {
         _selectedImageArray = [NSMutableArray array];
+    }
+    
+    if (_selectedImageArray.count>=9) {
+        return;
     }
     
     dispatch_async(_queue, ^{

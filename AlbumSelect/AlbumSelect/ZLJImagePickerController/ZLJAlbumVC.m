@@ -164,34 +164,13 @@
         NSDictionary*info =[[NSBundle mainBundle] infoDictionary];
         NSString*projectName =[info objectForKey:@"CFBundleName"];
         NSString *title = [NSString stringWithFormat:@"请在%@的“设置－隐私－照片”选项中，允许%@访问您的手机。",[UIDevice currentDevice].model,projectName];
-//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:nil delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles: nil];
-//        [alertView show];
         
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleAlert];
         
         [alertController addAction:[UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             //按钮触发的方法
             
-//         NSArray *_array = @[
-//                       @{@"系统设置":@"prefs:root=INTERNET_TETHERING"},
-//                       @{@"WIFI设置":@"prefs:root=WIFI"},
-//                       @{@"蓝牙设置":@"prefs:root=Bluetooth"},
-//                       @{@"系统通知":@"prefs:root=NOTIFICATIONS_ID"},
-//                       @{@"通用设置":@"prefs:root=General"},
-//                       @{@"显示设置":@"prefs:root=DISPLAY&BRIGHTNESS"},
-//                       @{@"壁纸设置":@"prefs:root=Wallpaper"},
-//                       @{@"声音设置":@"prefs:root=Sounds"},
-//                       @{@"隐私设置":@"prefs:root=privacy"},
-//                       @{@"APP Store":@"prefs:root=STORE"},
-//                       @{@"Notes":@"prefs:root=NOTES"},
-//                       @{@"Safari":@"prefs:root=Safari"},
-//                       @{@"Music":@"prefs:root=MUSIC"},
-//                       @{@"photo":@"prefs:root=Photos"}
-//                       ];
-//            NSURL * url = [NSURL URLWithString:[_array[9] allValues].firstObject];
-//            [[UIApplication sharedApplication]openURL:url];
-            
-            
+             /********** 改改改 ***********/
             
             NSURL *url = [NSURL URLWithString:@"prefs:root=Privacy&path=PHOTOS"];
             
@@ -199,9 +178,7 @@
             {
                 [[UIApplication sharedApplication] openURL:url];
             }
-            
-
-            
+           
         }]];
         [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
             //按钮触发的方法
@@ -247,13 +224,14 @@
             if (fetchResult.count < 1) continue;
             [_groupArray addObject:[ZLJGroupInfo resultInfoWithPHResult:fetchResult title:collection.localizedTitle]];
         }
+       /********** 这里是和AL库的区别，他不是一个black 所以，在用户未作出选择的时候会出现bug***********/
+        if (_groupArray.count!=0) {
+            [_tableView reloadData];
+            ZLJPhotosVC *firstPhotosVC  = [[ZLJPhotosVC alloc] initWithGroupInfo:_groupArray[0]];
+            firstPhotosVC.delegate =self.navigationController;
+            [self.navigationController pushViewController:firstPhotosVC animated:NO];
+        }
 
-        
-        ZLJPhotosVC *firstPhotosVC  = [[ZLJPhotosVC alloc] initWithGroupInfo:_groupArray[0]];
-        firstPhotosVC.delegate =self.navigationController;
-        [self.navigationController pushViewController:firstPhotosVC animated:NO];
-        
-        [_tableView reloadData];
     }
     
     
